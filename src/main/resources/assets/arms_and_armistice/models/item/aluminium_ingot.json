@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "arms_and_armistice:item/aluminium_ingot"
+  }
+}

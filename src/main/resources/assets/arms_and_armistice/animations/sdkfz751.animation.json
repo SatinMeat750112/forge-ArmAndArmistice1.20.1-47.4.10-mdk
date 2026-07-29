@@ -1,0 +1,319 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.sdkfz751.forward_normal": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"sd_kfz_7_hull": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, 0.475, 0]
+						},
+						"0.5": {
+							"vector": [0, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, 0.475, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.25": {
+							"vector": [0, 0.475, 0]
+						},
+						"1.5": {
+							"vector": [0, 0, 0]
+						},
+						"1.75": {
+							"vector": [0, 0.475, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"road_wheels": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [360, 0, 0]
+						}
+					}
+				},
+				"track_set4": {
+					"position": {
+						"vector": [0, 0.1, -0.275]
+					}
+				},
+				"track_set5": {
+					"position": {
+						"vector": [0, 0.125, 0.25]
+					}
+				},
+				"tr_wheel_set_one": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [450, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_two": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [450, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_three": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [360, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_four": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [360, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_five": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [382.5, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_six": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [360, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_seven": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [360, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_eight": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.0": {
+							"vector": [360, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"animation.sdkfz751.reverse_normal": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"sd_kfz_7_hull": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [0, -0.575, 0]
+						},
+						"0.5": {
+							"vector": [0, 0, 0]
+						},
+						"0.75": {
+							"vector": [0, -0.575, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.25": {
+							"vector": [0, -0.575, 0]
+						},
+						"1.5": {
+							"vector": [0, 0, 0]
+						},
+						"1.75": {
+							"vector": [0, -0.575, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"road_wheels": {
+					"rotation": {
+						"0.0": {
+							"vector": [360, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"track_set4": {
+					"position": {
+						"vector": [0, 0.1, -0.275]
+					}
+				},
+				"track_set5": {
+					"position": {
+						"vector": [0, 0.125, 0.25]
+					}
+				},
+				"tr_wheel_set_one": {
+					"rotation": {
+						"0.0": {
+							"vector": [450, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_two": {
+					"rotation": {
+						"0.0": {
+							"vector": [450, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_three": {
+					"rotation": {
+						"0.0": {
+							"vector": [360, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_four": {
+					"rotation": {
+						"0.0": {
+							"vector": [360, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_five": {
+					"rotation": {
+						"0.0": {
+							"vector": [382.5, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_six": {
+					"rotation": {
+						"0.0": {
+							"vector": [360, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_seven": {
+					"rotation": {
+						"0.0": {
+							"vector": [360, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"tr_wheel_set_eight": {
+					"rotation": {
+						"0.0": {
+							"vector": [360, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"animation.sdkfz751.idle_on": {
+			"loop": true,
+			"animation_length": 2,
+			"bones": {
+				"sd_kfz_7_hull": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.25": {
+							"vector": [-0.275, 0, 0]
+						},
+						"0.5": {
+							"vector": [0, 0, 0]
+						},
+						"0.75": {
+							"vector": [-0.275, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.25": {
+							"vector": [-0.275, 0, 0]
+						},
+						"1.5": {
+							"vector": [0, 0, 0]
+						},
+						"1.75": {
+							"vector": [-0.275, 0, 0]
+						},
+						"2.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"animation.sdkfz751.idle_off": {
+			"loop": true
+		}
+	}
+}
