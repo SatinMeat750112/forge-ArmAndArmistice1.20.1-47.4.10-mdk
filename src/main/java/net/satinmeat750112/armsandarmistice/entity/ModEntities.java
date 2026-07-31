@@ -18,7 +18,7 @@ public class ModEntities {
             ENTITY_TYPES.register("sdkfz_751",
                     () -> EntityType.Builder.of(Sdkfz751Entity::new, MobCategory.MISC)
                             .sized(2.0f, 1.5f)
-                            .build(new ResourceLocation(ArmsAndArmistice.MODID, "sdkfz_751").toString()));
+                            .build(ResourceLocation.fromNamespaceAndPath(ArmsAndArmistice.MODID, "sdkfz_751").toString()));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
