@@ -75,15 +75,14 @@ public class ArmsAndArmistice
 
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
-    if(event.getTabKey() == CreativeModeTabs.INGREDIENTS)
-        event.accept(Moditems.Steel_Ingot);
-        event.accept(Moditems.Brass_Ingot);
-        event.accept(Moditems.Chromium_Ingot);
-        event.accept(Moditems.Aluminium_Ingot);
-        event.accept(Moditems.Unprocessed_Rubber);
-        event.accept(Moditems.Processed_Rubber);
-
-
+        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS){
+            event.accept(Moditems.Steel_Ingot);
+            event.accept(Moditems.Brass_Ingot);
+            event.accept(Moditems.Chromium_Ingot);
+            event.accept(Moditems.Aluminium_Ingot);
+            event.accept(Moditems.Unprocessed_Rubber);
+            event.accept(Moditems.Processed_Rubber);
+        }
 
     }
 
