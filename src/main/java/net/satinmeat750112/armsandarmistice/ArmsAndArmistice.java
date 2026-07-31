@@ -65,23 +65,13 @@ public class ArmsAndArmistice
 
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
-
-        LOGGER.info("HELLO FROM COMMON SETUP");
-
-
-            LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-
+    private void commonSetup(final FMLCommonSetupEvent event) {
 
 
 
     }
 
         //CREATIVE MODE TAB HERE
-
-
-
 
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
@@ -97,42 +87,6 @@ public class ArmsAndArmistice
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event)
-    {
-
-        LOGGER.info("HELLO from server starting");
-    }
-
-
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
     {
@@ -140,9 +94,6 @@ public class ArmsAndArmistice
         public static void onClientSetup(FMLClientSetupEvent event)
         {
             EntityRenderers.register(ModEntities.SDKFZ_751.get(), Sdkfz751Renderer::new);
-
-
-
         }
     }
 }

@@ -17,7 +17,7 @@ public class ModEntities {
     public static final RegistryObject<EntityType<Sdkfz751Entity>> SDKFZ_751 =
             ENTITY_TYPES.register("sdkfz_751",
                     () -> EntityType.Builder.of(Sdkfz751Entity::new, MobCategory.MISC)
-                            .sized(0.6f, 1.95f)
+                            .sized(2.0f, 1.5f)
                             .build(new ResourceLocation(ArmsAndArmistice.MODID, "sdkfz_751").toString()));
 
     public static void register(IEventBus eventBus) {
