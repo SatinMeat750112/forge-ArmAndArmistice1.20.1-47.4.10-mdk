@@ -26,8 +26,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-
-
 public class Sdkfz751Entity extends Animal implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -248,3 +246,5 @@ public class Sdkfz751Entity extends Animal implements GeoEntity {
         return this.cache;
     }
 }
+
+
