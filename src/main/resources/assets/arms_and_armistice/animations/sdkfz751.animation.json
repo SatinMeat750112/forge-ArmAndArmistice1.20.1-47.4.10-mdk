@@ -1,41 +1,10 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"animation.sdkfz751.forward_normal": {
+		"sdkfz751_forward_normal": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
-				"sd_kfz_7_hull": {
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.25": {
-							"vector": [0, 0.475, 0]
-						},
-						"0.5": {
-							"vector": [0, 0, 0]
-						},
-						"0.75": {
-							"vector": [0, 0.475, 0]
-						},
-						"1.0": {
-							"vector": [0, 0, 0]
-						},
-						"1.25": {
-							"vector": [0, 0.475, 0]
-						},
-						"1.5": {
-							"vector": [0, 0, 0]
-						},
-						"1.75": {
-							"vector": [0, 0.475, 0]
-						},
-						"2.0": {
-							"vector": [0, 0, 0]
-						}
-					}
-				},
 				"road_wheels": {
 					"rotation": {
 						"0.0": {
@@ -138,41 +107,10 @@
 				}
 			}
 		},
-		"animation.sdkfz751.reverse_normal": {
+		"sdkfz751_reverse_normal": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
-				"sd_kfz_7_hull": {
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.25": {
-							"vector": [0, -0.575, 0]
-						},
-						"0.5": {
-							"vector": [0, 0, 0]
-						},
-						"0.75": {
-							"vector": [0, -0.575, 0]
-						},
-						"1.0": {
-							"vector": [0, 0, 0]
-						},
-						"1.25": {
-							"vector": [0, -0.575, 0]
-						},
-						"1.5": {
-							"vector": [0, 0, 0]
-						},
-						"1.75": {
-							"vector": [0, -0.575, 0]
-						},
-						"2.0": {
-							"vector": [0, 0, 0]
-						}
-					}
-				},
 				"road_wheels": {
 					"rotation": {
 						"0.0": {
@@ -274,46 +212,6 @@
 					}
 				}
 			}
-		},
-		"animation.sdkfz751.idle_on": {
-			"loop": true,
-			"animation_length": 2,
-			"bones": {
-				"sd_kfz_7_hull": {
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.25": {
-							"vector": [-0.275, 0, 0]
-						},
-						"0.5": {
-							"vector": [0, 0, 0]
-						},
-						"0.75": {
-							"vector": [-0.275, 0, 0]
-						},
-						"1.0": {
-							"vector": [0, 0, 0]
-						},
-						"1.25": {
-							"vector": [-0.275, 0, 0]
-						},
-						"1.5": {
-							"vector": [0, 0, 0]
-						},
-						"1.75": {
-							"vector": [-0.275, 0, 0]
-						},
-						"2.0": {
-							"vector": [0, 0, 0]
-						}
-					}
-				}
-			}
-		},
-		"animation.sdkfz751.idle_off": {
-			"loop": true
 		}
 	}
 }
