@@ -37,7 +37,7 @@ public class ArmsAndArmistice
 
     public ArmsAndArmistice(FMLJavaModLoadingContext context)
     {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus modEventBus = context.getModEventBus();
 
         ModEntities.register(modEventBus);
 
