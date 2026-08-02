@@ -1,4 +1,4 @@
-package net.satinmeat750112.armsandarmistice.entity.contants;
+package net.satinmeat750112.armsandarmistice.entity.constants;
 
 public final class TankConstants {
     private TankConstants(){}
