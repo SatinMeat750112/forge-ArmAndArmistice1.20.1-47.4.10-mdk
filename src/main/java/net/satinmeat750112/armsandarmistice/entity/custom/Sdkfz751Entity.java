@@ -4,20 +4,30 @@ package net.satinmeat750112.armsandarmistice.entity.custom;
 
 
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.satinmeat750112.armsandarmistice.entity.contants.TankConstants;
+import net.satinmeat750112.armsandarmistice.entity.Models.Projectile;
+import net.satinmeat750112.armsandarmistice.entity.constants.TankConstants;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -37,6 +47,9 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
     private final static double maxHealth = 100.0D;
     private final static double movementSpeed = 0.35D;
     private final static double knockBackResistance = 1.0D;
+    private final float gunReach = 20f;
+    private static final float MainGunDamage = 5.0f;
+    private final Player controllingPassenger = (Player) this.getControllingPassenger();
     protected static final RawAnimation FORWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.forward_normal");
     protected static final RawAnimation BACKWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.backward_normal");
     protected static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.idle_off");
@@ -51,6 +64,7 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
                 .add(Attributes.MAX_HEALTH, maxHealth)
                 .add(Attributes.MOVEMENT_SPEED, movementSpeed)
                 .add(Attributes.KNOCKBACK_RESISTANCE, knockBackResistance)
+                .add(Attributes.ATTACK_DAMAGE,MainGunDamage)
                 .build();
     }
 
@@ -80,81 +94,84 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
     @Override
     public void travel(@NotNull Vec3 travelVector) {
         if (this.isAlive()) {
-            if (this.getControllingPassenger() instanceof Player passenger) {
-                float steeringInput = passenger.xxa;
-                float forwardInput = passenger.zza;
-
-                if (!this.level().isClientSide) {
-                    this.entityData.set(CLIENT_STEER, steeringInput);
-                }
-
-                if (forwardInput < -TankConstants.INPUT_MINIMUM) {
-                    this.setYRot(this.getYRot() + (steeringInput * TankConstants.STEERING_SENSITIVE));
-                } else {
-                    this.setYRot(this.getYRot() - (steeringInput * TankConstants.STEERING_SENSITIVE));
-                }
-
-                this.yRotO = this.getYRot();
-                this.yBodyRot = this.getYRot();
-                this.yHeadRot = this.yBodyRot;
-                this.setXRot(0.0F);
-                this.setRot(this.getYRot(), this.getXRot());
-
-                double targetSpeed = 0.0;
-
-                if (forwardInput > TankConstants.INPUT_MINIMUM) {
-                    this.CurrentAccelerationTicks++;
-                    if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MINIMUM) {
-                        this.currentGear = 1;
-                        targetSpeed = 0.1D;
-                    } else if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MAXIMUM) {
-                        this.currentGear = 2;
-                        targetSpeed = 0.6D;
-                    } else {
-                        this.currentGear = 3;
-                        targetSpeed = 0.8D;
-                    }
-                } else if (forwardInput < -TankConstants.INPUT_MINIMUM) {
-                    this.currentGear = TankConstants.MIN_GEAR;
-                    this.CurrentAccelerationTicks = 0;
-                    targetSpeed = -0.2D;
-                } else {
-                    this.currentGear = 0;
-                    if (Math.abs(steeringInput) > TankConstants.INPUT_MINIMUM) {
-                        this.CurrentAccelerationTicks = Math.max(1, this.CurrentAccelerationTicks - 1);
-                    } else {
-                        this.CurrentAccelerationTicks = 0;
-                    }
-                }
-
-                double smoothSpeed = getSmoothSpeed(targetSpeed);
-
-                float yawRadians = (float) Math.toRadians(this.getYRot());
-                double motionX = -Math.sin(yawRadians) * smoothSpeed;
-                double motionZ = Math.cos(yawRadians) * smoothSpeed;
-
-                // Directly overwrite the vector array map to override all engine drag logic bounds
-                this.setDeltaMovement(motionX, this.getDeltaMovement().y, motionZ);
-                this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
-                return;
+            if (this.controllingPassenger == null) {
+                super.travel(travelVector);
             }
+            assert(this.controllingPassenger != null);
+
+
+            float steeringInput = controllingPassenger.xxa;
+            float forwardInput = controllingPassenger.zza;
 
             if (!this.level().isClientSide) {
-                this.entityData.set(CLIENT_STEER, 0.0F);
+                this.entityData.set(CLIENT_STEER, steeringInput);
             }
-            this.currentGear = 0;
-            this.CurrentAccelerationTicks = 0;
 
-            double currentSpeed = Math.sqrt(this.getDeltaMovement().x * this.getDeltaMovement().x + this.getDeltaMovement().z * this.getDeltaMovement().z);
-            double smoothSpeed = currentSpeed * 0.85D;
-            if (smoothSpeed < 0.01D) smoothSpeed = 0.0D;
+            if (forwardInput < -TankConstants.INPUT_MINIMUM) {
+                this.setYRot(this.getYRot() + (steeringInput * TankConstants.STEERING_SENSITIVE));
+            } else {
+                this.setYRot(this.getYRot() - (steeringInput * TankConstants.STEERING_SENSITIVE));
+            }
+
+            this.yRotO = this.getYRot();
+            this.yBodyRot = this.getYRot();
+            this.yHeadRot = this.yBodyRot;
+            this.setXRot(0.0F);
+            this.setRot(this.getYRot(), this.getXRot());
+
+            double targetSpeed = 0.0;
+
+            if (forwardInput > TankConstants.INPUT_MINIMUM) {
+                this.CurrentAccelerationTicks++;
+                if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MINIMUM) {
+                    this.currentGear = 1;
+                    targetSpeed = 0.1D;
+                } else if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MAXIMUM) {
+                    this.currentGear = 2;
+                    targetSpeed = 0.6D;
+                } else {
+                    this.currentGear = 3;
+                    targetSpeed = 0.8D;
+                }
+            } else if (forwardInput < -TankConstants.INPUT_MINIMUM) {
+                this.currentGear = TankConstants.MIN_GEAR;
+                this.CurrentAccelerationTicks = 0;
+                targetSpeed = -0.2D;
+            } else {
+                this.currentGear = 0;
+                if (Math.abs(steeringInput) > TankConstants.INPUT_MINIMUM) {
+                    this.CurrentAccelerationTicks = Math.max(1, this.CurrentAccelerationTicks - 1);
+                } else {
+                    this.CurrentAccelerationTicks = 0;
+                }
+            }
+
+            double smoothSpeed = getSmoothSpeed(targetSpeed);
 
             float yawRadians = (float) Math.toRadians(this.getYRot());
-            this.setDeltaMovement(-Math.sin(yawRadians) * smoothSpeed, this.getDeltaMovement().y, Math.cos(yawRadians) * smoothSpeed);
+            double motionX = -Math.sin(yawRadians) * smoothSpeed;
+            double motionZ = Math.cos(yawRadians) * smoothSpeed;
+
+            // Directly overwrite the vector array map to override all engine drag logic bounds
+            this.setDeltaMovement(motionX, this.getDeltaMovement().y, motionZ);
             this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
             return;
         }
-        super.travel(travelVector);
+
+        if (!this.level().isClientSide) {
+            this.entityData.set(CLIENT_STEER, 0.0F);
+        }
+        this.currentGear = 0;
+        this.CurrentAccelerationTicks = 0;
+
+        double currentSpeed = Math.sqrt(this.getDeltaMovement().x * this.getDeltaMovement().x + this.getDeltaMovement().z * this.getDeltaMovement().z);
+        double smoothSpeed = currentSpeed * 0.85D;
+        if (smoothSpeed < 0.01D) smoothSpeed = 0.0D;
+
+        float yawRadians = (float) Math.toRadians(this.getYRot());
+        this.setDeltaMovement(-Math.sin(yawRadians) * smoothSpeed, this.getDeltaMovement().y, Math.cos(yawRadians) * smoothSpeed);
+        this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
+
     }
 
     private double getSmoothSpeed(double targetSpeed) {
@@ -254,6 +271,17 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
+    }
+
+    @Override
+    public boolean doHurtTarget(@NotNull Entity target) {
+        //play sounds etc. anything before attack
+
+        BlockHitResult result = Projectile.getTargetOfGun(this.level(), this.controllingPassenger, gunReach);
+        boolean attackResult = super.doHurtTarget(target);
+
+        //after attack
+        return attackResult;
     }
 
 }
