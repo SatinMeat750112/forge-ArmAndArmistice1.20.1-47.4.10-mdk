@@ -47,10 +47,6 @@ public class ArmsAndArmistice
         Moditems.register(modEventBus);
 
 
-
-
-
-
         modEventBus.addListener(this::commonSetup);
 
         GeckoLib.initialize();
@@ -82,6 +78,7 @@ public class ArmsAndArmistice
             event.accept(Moditems.Aluminium_Ingot);
             event.accept(Moditems.Unprocessed_Rubber);
             event.accept(Moditems.Processed_Rubber);
+            event.accept(Moditems.Sdkfz751);
         }
 
     }
