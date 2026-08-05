@@ -221,9 +221,9 @@ public class Sdkfz751Entity extends Animal implements GeoEntity {
         return null;
     }
 
-    protected static final RawAnimation FORWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.forward_normal");
-    protected static final RawAnimation BACKWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.backward_normal");
-    protected static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.idle_off");
+    protected static final RawAnimation FORWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz751.forward_normal");
+    protected static final RawAnimation BACKWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz751.reverse_normal");
+    protected static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz751.idle_off");
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
