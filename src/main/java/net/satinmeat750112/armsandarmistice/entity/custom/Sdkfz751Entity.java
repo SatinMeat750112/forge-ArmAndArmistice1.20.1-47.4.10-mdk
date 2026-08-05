@@ -17,6 +17,8 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.satinmeat750112.armsandarmistice.entity.contants.TankConstants;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -26,10 +28,19 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-
-
-public class Sdkfz751Entity extends Animal implements GeoEntity {
+public class Sdkfz751Entity extends Animal implements GeoEntity{
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private static final EntityDataAccessor<Float> CLIENT_STEER = SynchedEntityData.defineId(Sdkfz751Entity.class, EntityDataSerializers.FLOAT);
+    private int currentGear = 0;
+    private int CurrentAccelerationTicks = 0;
+    private final int MinimumPassengers = 3;
+    private final static double maxHealth = 100.0D;
+    private final static double movementSpeed = 0.35D;
+    private final static double knockBackResistance = 1.0D;
+    protected static final RawAnimation FORWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.forward_normal");
+    protected static final RawAnimation BACKWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.backward_normal");
+    protected static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.idle_off");
+    private final Player controllingPassenger = (Player) this.getControllingPassenger();
 
     public Sdkfz751Entity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
@@ -37,9 +48,9 @@ public class Sdkfz751Entity extends Animal implements GeoEntity {
 
     public static AttributeSupplier setAttributes() {
         return Animal.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 100.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.35D)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
+                .add(Attributes.MAX_HEALTH, maxHealth)
+                .add(Attributes.MOVEMENT_SPEED, movementSpeed)
+                .add(Attributes.KNOCKBACK_RESISTANCE, knockBackResistance)
                 .build();
     }
 
@@ -54,7 +65,7 @@ public class Sdkfz751Entity extends Animal implements GeoEntity {
     }
 
     @Override
-    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+    public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (!this.level().isClientSide) {
             if (player.isShiftKeyDown()) {
                 return InteractionResult.PASS;
@@ -64,96 +75,84 @@ public class Sdkfz751Entity extends Animal implements GeoEntity {
         }
         return InteractionResult.sidedSuccess(this.level().isClientSide);
     }
-    private static final EntityDataAccessor<Float> CLIENT_STEER = SynchedEntityData.defineId(Sdkfz751Entity.class, EntityDataSerializers.FLOAT);
-    private int currentGear = 0;
-    private int accelerationTicks = 0;
+
 
     @Override
-    public void travel(Vec3 travelVector) {
+    public void travel(@NotNull Vec3 travelVector) {
         if (this.isAlive()) {
-            if (this.getControllingPassenger() instanceof Player passenger) {
-                float steeringInput = passenger.xxa;
-                float forwardInput = passenger.zza;
+            if (this.controllingPassenger == null) {
+                super.travel(travelVector);
+            }
+            assert(this.controllingPassenger != null);
 
-                if (!this.level().isClientSide) {
-                    this.entityData.set(CLIENT_STEER, steeringInput);
-                }
 
-                float steeringSpeed = 2.0F;
-                if (forwardInput < -0.01F) {
-                    this.setYRot(this.getYRot() + (steeringInput * steeringSpeed));
+            float steeringInput = controllingPassenger.xxa;
+            float forwardInput = controllingPassenger.zza;
+
+            if (!this.level().isClientSide) {
+                this.entityData.set(CLIENT_STEER, steeringInput);
+            }
+
+                if (forwardInput < -TankConstants.INPUT_MINIMUM) {
+                    this.setYRot(this.getYRot() + (steeringInput * TankConstants.STEERING_SENSITIVE));
                 } else {
-                    this.setYRot(this.getYRot() - (steeringInput * steeringSpeed));
+                    this.setYRot(this.getYRot() - (steeringInput * TankConstants.STEERING_SENSITIVE));
                 }
 
-                this.yRotO = this.getYRot();
-                this.yBodyRot = this.getYRot();
-                this.yHeadRot = this.yBodyRot;
-                this.setXRot(0.0F);
-                this.setRot(this.getYRot(), this.getXRot());
+            this.yRotO = this.getYRot();
+            this.yBodyRot = this.getYRot();
+            this.yHeadRot = this.yBodyRot;
+            this.setXRot(0.0F);
+            this.setRot(this.getYRot(), this.getXRot());
 
                 double targetSpeed = 0.0;
 
-                if (forwardInput > 0.01F) {
-                    this.accelerationTicks++;
-                    if (this.accelerationTicks < 30) {
+                if (forwardInput > TankConstants.INPUT_MINIMUM) {
+                    this.CurrentAccelerationTicks++;
+                    if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MINIMUM) {
                         this.currentGear = 1;
                         targetSpeed = 0.1D;
-                    } else if (this.accelerationTicks < 70) {
+                    } else if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MAXIMUM) {
                         this.currentGear = 2;
                         targetSpeed = 0.6D;
                     } else {
                         this.currentGear = 3;
                         targetSpeed = 0.8D;
                     }
-                } else if (forwardInput < -0.01F) {
-                    this.currentGear = -1;
-                    this.accelerationTicks = 0;
+                } else if (forwardInput < -TankConstants.INPUT_MINIMUM) {
+                    this.currentGear = TankConstants.MIN_GEAR;
+                    this.CurrentAccelerationTicks = 0;
                     targetSpeed = -0.2D;
                 } else {
                     this.currentGear = 0;
-                    if (Math.abs(steeringInput) > 0.01F) {
-                        this.accelerationTicks = Math.max(1, this.accelerationTicks - 1);
+                    if (Math.abs(steeringInput) > TankConstants.INPUT_MINIMUM) {
+                        this.CurrentAccelerationTicks = Math.max(1, this.CurrentAccelerationTicks - 1);
                     } else {
-                        this.accelerationTicks = 0;
+                        this.CurrentAccelerationTicks = 0;
                     }
                 }
 
-                double currentSpeed = Math.sqrt(this.getDeltaMovement().x * this.getDeltaMovement().x + this.getDeltaMovement().z * this.getDeltaMovement().z);
-                double yawRadCheck = Math.toRadians(this.getYRot());
-                if ((this.getDeltaMovement().x * -Math.sin(yawRadCheck) + this.getDeltaMovement().z * Math.cos(yawRadCheck)) < 0) {
-                    currentSpeed = -currentSpeed;
-                }
-
-                double smoothSpeed = currentSpeed;
-                double accelRate = 0.01D;
-                double decelRate = 0.02D;
-
-                if (currentSpeed < targetSpeed) {
-                    smoothSpeed = Math.min(targetSpeed, currentSpeed + accelRate);
-                } else if (currentSpeed > targetSpeed) {
-                    smoothSpeed = Math.max(targetSpeed, currentSpeed - decelRate);
-                }
+                double smoothSpeed = getSmoothSpeed(targetSpeed);
 
                 float yawRadians = (float) Math.toRadians(this.getYRot());
                 double motionX = -Math.sin(yawRadians) * smoothSpeed;
                 double motionZ = Math.cos(yawRadians) * smoothSpeed;
 
-                // Directly overwrite the vector array map to override all engine drag logic bounds
-                this.setDeltaMovement(motionX, this.getDeltaMovement().y, motionZ);
-                this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
-                return;
-            }
+            // Directly overwrite the vector array map to override all engine drag logic bounds
+            this.setDeltaMovement(motionX, this.getDeltaMovement().y, motionZ);
+            this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
+            return;
+        }
 
             if (!this.level().isClientSide) {
                 this.entityData.set(CLIENT_STEER, 0.0F);
             }
             this.currentGear = 0;
-            this.accelerationTicks = 0;
+            this.CurrentAccelerationTicks = 0;
 
-            double currentSpeed = Math.sqrt(this.getDeltaMovement().x * this.getDeltaMovement().x + this.getDeltaMovement().z * this.getDeltaMovement().z);
-            double smoothSpeed = currentSpeed * 0.85D;
-            if (smoothSpeed < 0.01D) smoothSpeed = 0.0D;
+        double currentSpeed = Math.sqrt(this.getDeltaMovement().x * this.getDeltaMovement().x + this.getDeltaMovement().z * this.getDeltaMovement().z);
+        double smoothSpeed = currentSpeed * 0.85D;
+        if (smoothSpeed < 0.01D) smoothSpeed = 0.0D;
 
             float yawRadians = (float) Math.toRadians(this.getYRot());
             this.setDeltaMovement(-Math.sin(yawRadians) * smoothSpeed, this.getDeltaMovement().y, Math.cos(yawRadians) * smoothSpeed);
@@ -163,8 +162,26 @@ public class Sdkfz751Entity extends Animal implements GeoEntity {
         super.travel(travelVector);
     }
 
+    private double getSmoothSpeed(double targetSpeed) {
+        double currentSpeed = Math.sqrt(this.getDeltaMovement().x * this.getDeltaMovement().x + this.getDeltaMovement().z * this.getDeltaMovement().z);
+        double yawRadCheck = Math.toRadians(this.getYRot());
+        if ((this.getDeltaMovement().x * -Math.sin(yawRadCheck) + this.getDeltaMovement().z * Math.cos(yawRadCheck)) < 0) {
+            currentSpeed = -currentSpeed;
+        }
+
+        double smoothSpeed = currentSpeed;
+
+
+        if (currentSpeed < targetSpeed) {
+            smoothSpeed = Math.min(targetSpeed, currentSpeed + TankConstants.ACCELERATION_RATE);
+        } else if (currentSpeed > targetSpeed) {
+            smoothSpeed = Math.max(targetSpeed, currentSpeed - TankConstants.DECELERATION_RATE);
+        }
+        return smoothSpeed;
+    }
+
     @Override
-    protected void positionRider(net.minecraft.world.entity.Entity rider, net.minecraft.world.entity.Entity.MoveFunction moveFunction) {
+    protected void positionRider(net.minecraft.world.entity.@NotNull Entity rider, net.minecraft.world.entity.Entity.@NotNull MoveFunction moveFunction) {
         if (this.hasPassenger(rider)) {
 
             int seatIndex = this.getPassengers().indexOf(rider);
@@ -209,15 +226,15 @@ public class Sdkfz751Entity extends Animal implements GeoEntity {
     }
 
     @Override
-    protected boolean canAddPassenger(net.minecraft.world.entity.Entity passenger) {
-        return this.getPassengers().size() < 3;
+    protected boolean canAddPassenger(net.minecraft.world.entity.@NotNull Entity passenger) {
+        return this.getPassengers().size() < MinimumPassengers;
     }
 
 
 
     @Nullable
     @Override
-    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob ageableMob) {
+    public AgeableMob getBreedOffspring(@NotNull ServerLevel level, @NotNull AgeableMob ageableMob) {
         return null;
     }
 
@@ -235,7 +252,7 @@ public class Sdkfz751Entity extends Animal implements GeoEntity {
                     return event.setAndContinue(BACKWARD_ANIM);
                 }
 
-                if (Math.abs(passenger.xxa) > 0.01F) {
+                if (Math.abs(passenger.xxa) > TankConstants.INPUT_MINIMUM) {
                     return event.setAndContinue(FORWARD_ANIM);
                 }
             }
@@ -247,4 +264,7 @@ public class Sdkfz751Entity extends Animal implements GeoEntity {
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
     }
+
 }
+
+
