@@ -1,9 +1,6 @@
 package net.satinmeat750112.armsandarmistice.entity.custom;
 
 
-
-
-
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,7 +14,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.satinmeat750112.armsandarmistice.entity.contants.TankConstants;
+import net.satinmeat750112.armsandarmistice.entity.constants.TankConstants;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -93,11 +90,11 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
                 this.entityData.set(CLIENT_STEER, steeringInput);
             }
 
-                if (forwardInput < -TankConstants.INPUT_MINIMUM) {
-                    this.setYRot(this.getYRot() + (steeringInput * TankConstants.STEERING_SENSITIVE));
-                } else {
-                    this.setYRot(this.getYRot() - (steeringInput * TankConstants.STEERING_SENSITIVE));
-                }
+            if (forwardInput < -TankConstants.INPUT_MINIMUM) {
+                this.setYRot(this.getYRot() + (steeringInput * TankConstants.STEERING_SENSITIVE));
+            } else {
+                this.setYRot(this.getYRot() - (steeringInput * TankConstants.STEERING_SENSITIVE));
+            }
 
             this.yRotO = this.getYRot();
             this.yBodyRot = this.getYRot();
@@ -105,38 +102,38 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
             this.setXRot(0.0F);
             this.setRot(this.getYRot(), this.getXRot());
 
-                double targetSpeed = 0.0;
+            double targetSpeed = 0.0;
 
-                if (forwardInput > TankConstants.INPUT_MINIMUM) {
-                    this.CurrentAccelerationTicks++;
-                    if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MINIMUM) {
-                        this.currentGear = 1;
-                        targetSpeed = 0.1D;
-                    } else if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MAXIMUM) {
-                        this.currentGear = 2;
-                        targetSpeed = 0.6D;
-                    } else {
-                        this.currentGear = 3;
-                        targetSpeed = 0.8D;
-                    }
-                } else if (forwardInput < -TankConstants.INPUT_MINIMUM) {
-                    this.currentGear = TankConstants.MIN_GEAR;
-                    this.CurrentAccelerationTicks = 0;
-                    targetSpeed = -0.2D;
+            if (forwardInput > TankConstants.INPUT_MINIMUM) {
+                this.CurrentAccelerationTicks++;
+                if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MINIMUM) {
+                    this.currentGear = 1;
+                    targetSpeed = 0.1D;
+                } else if (this.CurrentAccelerationTicks < TankConstants.ACCELERATIONTICKS_MAXIMUM) {
+                    this.currentGear = 2;
+                    targetSpeed = 0.6D;
                 } else {
-                    this.currentGear = 0;
-                    if (Math.abs(steeringInput) > TankConstants.INPUT_MINIMUM) {
-                        this.CurrentAccelerationTicks = Math.max(1, this.CurrentAccelerationTicks - 1);
-                    } else {
-                        this.CurrentAccelerationTicks = 0;
-                    }
+                    this.currentGear = 3;
+                    targetSpeed = 0.8D;
                 }
+            } else if (forwardInput < -TankConstants.INPUT_MINIMUM) {
+                this.currentGear = TankConstants.MIN_GEAR;
+                this.CurrentAccelerationTicks = 0;
+                targetSpeed = -0.2D;
+            } else {
+                this.currentGear = 0;
+                if (Math.abs(steeringInput) > TankConstants.INPUT_MINIMUM) {
+                    this.CurrentAccelerationTicks = Math.max(1, this.CurrentAccelerationTicks - 1);
+                } else {
+                    this.CurrentAccelerationTicks = 0;
+                }
+            }
 
-                double smoothSpeed = getSmoothSpeed(targetSpeed);
+            double smoothSpeed = getSmoothSpeed(targetSpeed);
 
-                float yawRadians = (float) Math.toRadians(this.getYRot());
-                double motionX = -Math.sin(yawRadians) * smoothSpeed;
-                double motionZ = Math.cos(yawRadians) * smoothSpeed;
+            float yawRadians = (float) Math.toRadians(this.getYRot());
+            double motionX = -Math.sin(yawRadians) * smoothSpeed;
+            double motionZ = Math.cos(yawRadians) * smoothSpeed;
 
             // Directly overwrite the vector array map to override all engine drag logic bounds
             this.setDeltaMovement(motionX, this.getDeltaMovement().y, motionZ);
@@ -152,13 +149,14 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
 
         double currentSpeed = Math.sqrt(this.getDeltaMovement().x * this.getDeltaMovement().x + this.getDeltaMovement().z * this.getDeltaMovement().z);
         double smoothSpeed = currentSpeed * 0.85D;
-        if (smoothSpeed < 0.01D) smoothSpeed = 0.0D;
-
+        if (smoothSpeed < 0.01D)
+        {
             float yawRadians = (float) Math.toRadians(this.getYRot());
             this.setDeltaMovement(-Math.sin(yawRadians) * smoothSpeed, this.getDeltaMovement().y, Math.cos(yawRadians) * smoothSpeed);
             this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
             return;
         }
+
         super.travel(travelVector);
     }
 
@@ -237,10 +235,6 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
     public AgeableMob getBreedOffspring(@NotNull ServerLevel level, @NotNull AgeableMob ageableMob) {
         return null;
     }
-
-    protected static final RawAnimation FORWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.forward_normal");
-    protected static final RawAnimation BACKWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.backward_normal");
-    protected static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.idle_off");
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
