@@ -266,6 +266,7 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
         //play sounds etc. anything before attack
 
         BlockHitResult result = Projectile.getTargetOfGun(this.level(), this.controllingPassenger, gunReach);
+        System.out.println("Hit Result: " + result.getType() + ", Block Position: " + result.getBlockPos());
         boolean attackResult = super.doHurtTarget(target);
 
         //after attack
