@@ -31,12 +31,7 @@ public class Moditems {
     public static final RegistryObject<Item> Processed_Rubber = ITEMS.register("processed_rubber",
             () -> new Item(new Item.Properties()));
 
-
-
-
-
-
-
+    public static final RegistryObject<Item> Sdkfz751 = ITEMS.register("sdkfz751", () -> new Item(new Item.Properties()));
 
 
     public static void register(IEventBus eventBus) {

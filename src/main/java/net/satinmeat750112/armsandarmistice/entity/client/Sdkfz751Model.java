@@ -13,17 +13,17 @@ public class Sdkfz751Model extends GeoModel<Sdkfz751Entity> {
 
     @Override
     public ResourceLocation getModelResource(Sdkfz751Entity animatable) {
-        return new ResourceLocation(ArmsAndArmistice.MODID, "geo/sdkfz751.geo.json");
+        return ResourceLocation.fromNamespaceAndPath(ArmsAndArmistice.MODID, "geo/sdkfz751.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(Sdkfz751Entity animatable) {
-        return new ResourceLocation(ArmsAndArmistice.MODID, "textures/entity/sdkfz751.png");
+        return ResourceLocation.fromNamespaceAndPath(ArmsAndArmistice.MODID, "textures/entity/sdkfz751.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(Sdkfz751Entity animatable) {
-        return new ResourceLocation(ArmsAndArmistice.MODID, "animations/sdkfz751.animation.json");
+        return ResourceLocation.fromNamespaceAndPath(ArmsAndArmistice.MODID, "animations/sdkfz751.animation.json");
     }
 
     @Override

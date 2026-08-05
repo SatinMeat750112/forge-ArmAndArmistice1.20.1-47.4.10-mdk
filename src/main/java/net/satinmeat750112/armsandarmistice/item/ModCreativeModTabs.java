@@ -25,7 +25,7 @@ public class ModCreativeModTabs {
                         output.accept(Moditems.Chromium_Ingot.get());
                         output.accept(Moditems.Unprocessed_Rubber.get());
                         output.accept(Moditems.Processed_Rubber.get());
-
+                        output.accept(Moditems.Sdkfz751.get());
                         
                     })
                     .build());
