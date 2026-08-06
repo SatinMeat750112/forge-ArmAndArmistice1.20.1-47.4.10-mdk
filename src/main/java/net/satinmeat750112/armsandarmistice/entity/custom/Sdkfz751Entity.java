@@ -81,7 +81,6 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
 
     @Override
     public void travel(@NotNull Vec3 travelVector) {
-        controllingPassenger = (Player) this.getControllingPassenger();
         if (this.isAlive()) {
             if (this.controllingPassenger == null) {
                 ArmsAndArmistice.LOGGER.warn("Sdkfz751Entity is being controlled by a null passenger.");
@@ -184,11 +183,17 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
         }
         return smoothSpeed;
     }
-
+    @Override
+    protected void addPassenger(net.minecraft.world.entity.@NotNull Entity passenger) {
+        super.addPassenger(passenger);
+        if (passenger == this.getControllingPassenger()) {
+            controllingPassenger = (Player) passenger;
+            ArmsAndArmistice.LOGGER.warn("Controlling Passenger: {}", controllingPassenger);
+        }
+    }
     @Override
     protected void positionRider(net.minecraft.world.entity.@NotNull Entity rider, net.minecraft.world.entity.Entity.@NotNull MoveFunction moveFunction) {
         if (this.hasPassenger(rider)) {
-
             int seatIndex = this.getPassengers().indexOf(rider);
 
             double offsetX = 0.0;
