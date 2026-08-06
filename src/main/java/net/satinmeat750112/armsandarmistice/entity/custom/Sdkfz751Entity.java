@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.satinmeat750112.armsandarmistice.ArmsAndArmistice;
 import net.satinmeat750112.armsandarmistice.entity.constants.TankConstants;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -40,7 +41,7 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
     protected static final RawAnimation FORWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.forward_normal");
     protected static final RawAnimation BACKWARD_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.backward_normal");
     protected static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("animation.sdkfz251.idle_off");
-    private final Player controllingPassenger = (Player) this.getControllingPassenger();
+    private Player controllingPassenger;
 
     public Sdkfz751Entity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
@@ -80,11 +81,13 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
 
     @Override
     public void travel(@NotNull Vec3 travelVector) {
+        controllingPassenger = (Player) this.getControllingPassenger();
         if (this.isAlive()) {
             if (this.controllingPassenger == null) {
-                super.travel(travelVector);
+                ArmsAndArmistice.LOGGER.warn("Sdkfz751Entity is being controlled by a null passenger.");
+                return;
             }
-            assert(this.controllingPassenger != null);
+
 
 
             float steeringInput = controllingPassenger.xxa;
@@ -266,7 +269,7 @@ public class Sdkfz751Entity extends Animal implements GeoEntity{
         //play sounds etc. anything before attack
 
         BlockHitResult result = Projectile.getTargetOfGun(this.level(), this.controllingPassenger, gunReach);
-        System.out.println("Hit Result: " + result.getType() + ", Block Position: " + result.getBlockPos());
+        ArmsAndArmistice.LOGGER.warn("Hit Result: {}, Block Position: {}", result.getType(), result.getBlockPos());
         boolean attackResult = super.doHurtTarget(target);
 
         //after attack
