@@ -27,7 +27,7 @@ public class ArmsAndArmistice
 
     public static final String MODID = "arms_and_armistice";
 
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public ArmsAndArmistice(FMLJavaModLoadingContext context)
     {
